@@ -1,19 +1,38 @@
-const { Router } = require('express');
 const authentication = require('./authentication');
-const router = Router();
-const mysql = require('mysql2/promise');
-
-const dbConnection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'Nikita09022009',
-    database: 'booksManagment'
-})
+const router = require('./books/routes');
+const dbConnection = require('./dbConnection')
 
 router.get('/', (req, res) => {
     authentication.isAuth(req, res, dbConnection, req.cookies.userEmail).then(boolean => {
         if (boolean){
-            res.send('main'); // your main html file
+
+            res.send(`<h1>main ( check console )</h1>
+                    <button onclick="loadBooks( { amount: 3, onlyAvailable: true } );">More books</button>
+                    <script>
+                        async function loadBooks(options){
+                            try {
+                                const res = await fetch('http://localhost:3000/getBooks', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify(options)
+                                });
+                                res.json().then(console.log); // ALL BOOKS
+                            } catch (error) {
+                                console.log(error);
+                            }
+                        }
+                        loadBooks({
+                            amount: 6,
+                            onlyAvailable: true
+                            /*
+                                genre,
+                                author,
+                                from
+                            */
+                        })
+                    </script>`); // your main html file
             return;
         }
 
@@ -47,7 +66,7 @@ router.get('/', (req, res) => {
 
 router.post('/signup', (req, res) => { // url to send user data to signup
     async function asyncWrapper(){
-        try{
+        try {
             await authentication.isAuth(req, res, dbConnection, req.body.email).then(boolean => {
                 if (boolean){
                     res.send(JSON.stringify({
