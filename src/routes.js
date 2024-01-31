@@ -32,11 +32,10 @@ router.get('/', (req, res) => {
                                 from
                             */
                         })
-                    </script>`); // your main html file
+                    </script>`);
             return;
         }
 
-        /* There is code to connect frontend with server */
         res.send(`<button onclick="signup()">signup</button>
         <button onclick="login()">login</button>
         <script>
@@ -60,7 +59,7 @@ router.get('/', (req, res) => {
                 })
                 res.json().then(console.log); // POST request status. Then enough reload user page
             }
-        </script>`) // your signup/login file
+        </script>`) // your signup/login
     })
 });
 

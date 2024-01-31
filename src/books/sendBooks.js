@@ -17,15 +17,15 @@ module.exports = {
         return query
     },
 
-    async getBooks(req, res, dbConnection, options){
-        const query = this.createQueryToDB(options)
+    async getBooks(req, res, dbConnection){
+        const query = this.createQueryToDB(req.body)
 
         return new Promise((resolve, reject) => {
             dbConnection.then(conn => conn.query(query))
                         .then(( [ rows ] ) => resolve(rows))
         })
     },
-    async sendBooks(req, res, dbConnection, options){
-        res.send(JSON.stringify(await this.getBooks(req, res, dbConnection, options)));
+    async handle(req, res, dbConnection, options){
+        res.send(JSON.stringify(await this.getBooks(req, res, dbConnection)));
     }  
 }
